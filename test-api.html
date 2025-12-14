@@ -1,0 +1,151 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>🔧 API Test - AR City Overlay</title>
+    <style>
+        body {
+            font-family: monospace;
+            padding: 20px;
+            background: #1a1a1a;
+            color: #0f0;
+        }
+        .log {
+            background: #000;
+            padding: 10px;
+            margin: 10px 0;
+            border-left: 3px solid #0f0;
+        }
+        .error {
+            border-left-color: #f00;
+            color: #f00;
+        }
+        .success {
+            border-left-color: #0f0;
+            color: #0f0;
+        }
+        button {
+            background: #0f0;
+            color: #000;
+            border: none;
+            padding: 15px 30px;
+            font-size: 16px;
+            font-weight: bold;
+            cursor: pointer;
+            margin: 10px 5px;
+        }
+    </style>
+</head>
+<body>
+    <h1>🔧 Yelp AI API Test</h1>
+    <button onclick="testAPI()">Test Yelp AI API</button>
+    <button onclick="testFallback()">Test Fallback API</button>
+    <button onclick="clearLogs()">Clear Logs</button>
+    <div id="logs"></div>
+
+    <script>
+        const API_KEY = 'PCJyCg_1zfY8RD8N36287hpNvV8xU8jeHy8dR47eNuvHhwqYzTnY3l29UaG8fM8iR3ibXY2QKGwwBpEdN8cTf1ckn0Fy5yAPTF9xDCixHxrp-BBPRQvf4jWu2gA-aXYx';
+        
+        function log(message, type = 'log') {
+            const div = document.createElement('div');
+            div.className = `log ${type}`;
+            div.textContent = `[${new Date().toLocaleTimeString()}] ${message}`;
+            document.getElementById('logs').appendChild(div);
+            console.log(message);
+        }
+
+        function clearLogs() {
+            document.getElementById('logs').innerHTML = '';
+        }
+
+        async function testAPI() {
+            log('🚀 Testing Yelp AI API...', 'success');
+            
+            const requestBody = {
+                query: "Find the top 10 restaurants near me",
+                user_context: {
+                    locale: 'en_US',
+                    latitude: 37.7749,  // San Francisco
+                    longitude: -122.4194
+                }
+            };
+
+            log('📤 Request: ' + JSON.stringify(requestBody, null, 2));
+
+            try {
+                const response = await fetch('https://api.yelp.com/ai/chat/v2', {
+                    method: 'POST',
+                    headers: {
+                        'Authorization': `Bearer ${API_KEY}`,
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify(requestBody)
+                });
+
+                log(`📥 Response Status: ${response.status} ${response.statusText}`, response.ok ? 'success' : 'error');
+
+                if (!response.ok) {
+                    const errorText = await response.text();
+                    log(`❌ Error: ${errorText}`, 'error');
+                    return;
+                }
+
+                const data = await response.json();
+                log('✅ Success! Response:', 'success');
+                log(JSON.stringify(data, null, 2));
+                
+                if (data.entities && data.entities[0] && data.entities[0].businesses) {
+                    log(`✅ Found ${data.entities[0].businesses.length} businesses!`, 'success');
+                    data.entities[0].businesses.slice(0, 3).forEach((b, i) => {
+                        log(`${i+1}. ${b.name} - ${b.rating}⭐ - ${b.location?.formatted_address}`);
+                    });
+                }
+            } catch (error) {
+                log(`❌ Fetch Error: ${error.message}`, 'error');
+                log(`❌ Full Error: ${error.stack}`, 'error');
+            }
+        }
+
+        async function testFallback() {
+            log('🔄 Testing Fallback API (v3/businesses/search)...', 'success');
+            
+            try {
+                const url = 'https://api.yelp.com/v3/businesses/search?latitude=37.7749&longitude=-122.4194&limit=10';
+                
+                log('📤 Request URL: ' + url);
+
+                const response = await fetch(url, {
+                    method: 'GET',
+                    headers: {
+                        'Authorization': `Bearer ${API_KEY}`,
+                        'Accept': 'application/json',
+                    }
+                });
+
+                log(`📥 Response Status: ${response.status} ${response.statusText}`, response.ok ? 'success' : 'error');
+
+                if (!response.ok) {
+                    const errorText = await response.text();
+                    log(`❌ Error: ${errorText}`, 'error');
+                    return;
+                }
+
+                const data = await response.json();
+                log('✅ Success! Response:', 'success');
+                log(`✅ Found ${data.businesses.length} businesses!`, 'success');
+                data.businesses.slice(0, 3).forEach((b, i) => {
+                    log(`${i+1}. ${b.name} - ${b.rating}⭐ - ${b.location?.address1}`);
+                });
+            } catch (error) {
+                log(`❌ Fetch Error: ${error.message}`, 'error');
+                log(`❌ Full Error: ${error.stack}`, 'error');
+            }
+        }
+
+        // Auto-run test on load
+        log('🎯 Ready! Click "Test Yelp AI API" to test your API connection', 'success');
+    </script>
+</body>
+</html>
+

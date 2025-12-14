@@ -1,0 +1,23 @@
+{
+  "name": "yelp-ar-city-overlay",
+  "version": "1.0.0",
+  "description": "AR City Overlay app for Yelp AI API Hackathon - Overlay business information and AI recommendations using augmented reality",
+  "main": "index.html",
+  "scripts": {
+    "start": "npx serve -s . -l 3000",
+    "dev": "npx live-server --port=3000 --host=0.0.0.0"
+  },
+  "keywords": [
+    "yelp",
+    "ar",
+    "augmented-reality",
+    "gps",
+    "hackathon",
+    "ai"
+  ],
+  "author": "Your Name",
+  "license": "MIT",
+  "devDependencies": {},
+  "dependencies": {}
+}
+

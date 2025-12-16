@@ -19,11 +19,20 @@
 ```
 **Result:** Searches in the location you specified, NOT your GPS location!
 
-### **Scenario 2: No Location Mentioned** 📍
+### **Scenario 2: "Near Me" or "Nearby"** 📍
+```
+✅ "Find pizza places near me"
+✅ "Italian restaurants nearby"
+✅ "Sushi around here"
+✅ "Coffee shops close by"
+```
+**Result:** Uses your current GPS location!
+
+### **Scenario 3: No Location Mentioned** 📍
 ```
 ✅ "Find pizza places"
 ✅ "Italian restaurants"
-✅ "Sushi near me"
+✅ "Best sushi"
 ```
 **Result:** Uses your current GPS location (or London as default)
 
@@ -163,6 +172,42 @@ Yelp: Returns New York results! ✅
 Commit: "Fix: Respect location in voice query (e.g. 'near New York')"
 Repo: https://github.com/satishtamilan/yelpai
 Status: ✅ Live
+```
+
+---
+
+## 🔧 Update: "Near Me" Fix (Dec 16)
+
+### **Issue Found:**
+```
+❌ "Find pizza near me" was not using GPS
+❌ "Coffee shops nearby" was not using GPS
+```
+
+### **Root Cause:**
+The regex had a case-insensitive flag (`/i`) which made it match "near me" as a city name!
+
+### **Fix Applied:**
+```javascript
+// Step 1: Check for "near me" phrases first
+const useGPSPhrases = /\b(near me|nearby|near here|around here|close by)\b/i;
+
+// Step 2: Then check for actual city names (case-sensitive)
+const locationKeywords = /\b(in|at|near)\s+([A-Z][a-z]+)/;  // NO 'i' flag
+
+// Step 3: Use GPS if "near me" or no location found
+if (useGPSPhrases.test(query) || !hasLocation) {
+    use GPS ✅
+}
+```
+
+### **Now Works:**
+```
+✅ "Find pizza near me" → Uses GPS
+✅ "Coffee shops nearby" → Uses GPS
+✅ "Restaurants around here" → Uses GPS
+✅ "Pizza in New York" → Searches New York
+✅ "Sushi near Tokyo" → Searches Tokyo
 ```
 
 ---

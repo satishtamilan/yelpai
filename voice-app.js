@@ -629,40 +629,6 @@ function openBookingModal(businessName, autoStartVoice = false) {
     setTimeout(() => {
         document.getElementById('customerName').focus();
     }, 500);
-                clearInterval(window.bookingCountdownInterval);
-                window.bookingCountdownInterval = null;
-                voiceBtn.textContent = '🎤 Use Voice to Fill Form';
-                voiceBtn.style.background = 'linear-gradient(135deg, #4CAF50 0%, #388E3C 100%)';
-                voiceBtn.onclick = startVoiceBooking;
-                voiceStatus.textContent = '💡 Countdown cancelled. Fill form manually or click "Use Voice" above.';
-                voiceStatus.style.color = '#4CAF50';
-                voiceStatus.style.fontSize = '14px';
-                voiceStatus.style.fontWeight = 'normal';
-                speak('Auto-voice cancelled. Fill the form manually.');
-            }
-        };
-        
-        window.bookingCountdownInterval = setInterval(() => {
-            if (countdown > 0) {
-                voiceStatus.textContent = `🎤 Voice will start in ${countdown}... Get ready! (Click button above to cancel)`;
-                voiceStatus.style.color = '#ffa500';
-                voiceStatus.style.fontSize = '18px';
-                voiceStatus.style.fontWeight = 'bold';
-                countdown--;
-            } else {
-                clearInterval(window.bookingCountdownInterval);
-                window.bookingCountdownInterval = null;
-                
-                // Reset button for voice input
-                voiceBtn.textContent = '🎤 Use Voice to Fill Form';
-                voiceBtn.onclick = startVoiceBooking;
-                
-                startVoiceBooking();
-            }
-        }, 1000);
-    } else {
-        speak(`Let's book a table at ${businessName}. You can use voice to fill the form. Click "Use Voice" or fill manually.`);
-    }
 }
 
 // Voice booking input

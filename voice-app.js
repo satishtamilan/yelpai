@@ -237,18 +237,34 @@ async function queryYelpAI(query) {
         await getUserLocation();
     }
 
-    console.log('📍 Using location:', userLocation);
+    // Check if user specified a location in their query
+    const locationKeywords = /\b(in|at|near|around|close to|by)\s+([A-Z][a-z]+(\s+[A-Z][a-z]+)*)/i;
+    const hasLocationInQuery = locationKeywords.test(query) || 
+                                /New York|London|Paris|Tokyo|Los Angeles|San Francisco|Chicago|Boston|Seattle|Miami|Vegas|Toronto|Vancouver|Sydney|Melbourne/i.test(query);
+
+    let finalQuery = query;
+    let context = {
+        locale: CONFIG.LOCALE
+    };
+
+    if (hasLocationInQuery) {
+        // User specified a location - let Yelp AI parse it naturally
+        console.log('📍 Location detected in query, using natural language');
+        finalQuery = query;
+    } else {
+        // No location mentioned - use GPS coordinates
+        console.log('📍 No location in query, using GPS:', userLocation);
+        finalQuery = `${query} near ${userLocation.lat}, ${userLocation.lng}`;
+        context.latitude = userLocation.lat;
+        context.longitude = userLocation.lng;
+    }
 
     // Detect if this is a reservation query
     const isReservation = /book|reserve|table|reservation/i.test(query);
 
     const requestBody = {
-        query: `${query} near ${userLocation.lat}, ${userLocation.lng}`,
-        user_context: {
-            locale: CONFIG.LOCALE,
-            latitude: userLocation.lat,
-            longitude: userLocation.lng
-        }
+        query: finalQuery,
+        user_context: context
     };
 
     // Add conversation context for reservations

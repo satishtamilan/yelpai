@@ -599,15 +599,6 @@ function updateLocationStatus(text) {
     }
 }
 
-// Microphone button click handler
-document.getElementById('micBtn').addEventListener('click', () => {
-    if (isListening) {
-        stopListening();
-    } else {
-        startListening();
-    }
-});
-
 // Open booking modal
 function openBookingModal(businessName, autoStartVoice = false) {
     const modal = document.getElementById('bookingModal');
@@ -1229,6 +1220,13 @@ function voiceBooking() {
     startListening();
 }
 
+// Make functions globally accessible for HTML onclick handlers
+window.speakQuery = speakQuery;
+window.startListening = startListening;
+window.clearResults = clearResults;
+window.closeBookingModal = closeBookingModal;
+window.confirmBooking = confirmBooking;
+
 // Initialize on load
 window.addEventListener('load', async () => {
     console.log('🎤 Voice-First Discovery initialized');
@@ -1246,6 +1244,21 @@ window.addEventListener('load', async () => {
     // Check for speech recognition support
     if (!window.SpeechRecognition && !window.webkitSpeechRecognition) {
         updateStatus('⚠️ Speech recognition not supported. Use suggestion chips or Chrome browser.');
+    }
+    
+    // Set up microphone button click handler
+    const micBtn = document.getElementById('micBtn');
+    if (micBtn) {
+        micBtn.addEventListener('click', () => {
+            if (isListening) {
+                stopListening();
+            } else {
+                startListening();
+            }
+        });
+        console.log('✅ Microphone button event listener attached');
+    } else {
+        console.error('❌ Microphone button not found!');
     }
     
     // Close modal when clicking outside

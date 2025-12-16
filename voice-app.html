@@ -549,25 +549,7 @@
                 <div class="modal-header">
                     <h2>📅 Book a Table</h2>
                     <div class="business-name-modal" id="modalBusinessName"></div>
-                </div>
-
-                <!-- Voice Input Option -->
-                <div style="background: rgba(76, 175, 80, 0.1); padding: 15px; border-radius: 10px; margin-bottom: 20px; border: 1px solid rgba(76, 175, 80, 0.3);">
-                    <div style="display: flex; gap: 10px; margin-bottom: 10px;">
-                        <button type="button" id="voiceBookingBtn" onclick="startVoiceBooking()" style="flex: 2; padding: 18px; background: linear-gradient(135deg, #4CAF50 0%, #388E3C 100%); color: white; border: none; border-radius: 10px; font-size: 18px; font-weight: bold; cursor: pointer; transition: all 0.3s; box-shadow: 0 4px 15px rgba(76, 175, 80, 0.3);">
-                            🎤 Use Voice
-                        </button>
-                        <button type="button" onclick="document.getElementById('voiceBookingStatus').innerHTML = '✍️ Fill manually below'; closeVoiceHelp();" style="flex: 1; padding: 18px; background: rgba(255, 255, 255, 0.1); color: white; border: 1px solid rgba(255, 255, 255, 0.2); border-radius: 10px; font-size: 16px; font-weight: bold; cursor: pointer; transition: all 0.3s;">
-                            ✍️ Skip
-                        </button>
-                    </div>
-                    <div id="voiceBookingStatus" style="text-align: center; font-size: 14px; color: #4CAF50; min-height: 50px; line-height: 1.5; padding: 5px;">
-                        💡 Click "Use Voice" or "Skip" to fill manually
-                    </div>
-                </div>
-
-                <div style="text-align: center; margin: 20px 0; color: #666; font-weight: bold;">
-                    ── OR FILL MANUALLY ──
+                    <p style="color: #999; font-size: 14px; margin-top: 10px;">Quick & Easy - Just confirm or adjust details</p>
                 </div>
                 
                 <form onsubmit="event.preventDefault(); confirmBooking();">
@@ -637,22 +619,16 @@
                     </div>
                 </form>
                 
-                <div style="background: rgba(255, 255, 255, 0.05); padding: 15px; border-radius: 10px; margin-top: 20px;">
-                    <p style="text-align: center; color: #4CAF50; margin-bottom: 10px; font-size: 14px; font-weight: bold;">
-                        🎤 Voice Tips for Best Results:
+                <div style="background: rgba(76, 175, 80, 0.1); padding: 20px; border-radius: 10px; margin-top: 20px; text-align: center; border: 1px solid rgba(76, 175, 80, 0.3);">
+                    <p style="color: #4CAF50; font-size: 15px; margin: 0 0 8px 0; font-weight: bold;">
+                        ✅ Simple & Quick!
                     </p>
-                    <div style="text-align: left; color: #ddd; font-size: 13px; line-height: 1.8; max-width: 500px; margin: 0 auto;">
-                        <div style="margin-bottom: 8px;">✅ <strong>Speak clearly</strong> at normal pace</div>
-                        <div style="margin-bottom: 8px;">✅ <strong>Say all details</strong> in one go if possible</div>
-                        <div style="margin-bottom: 8px;">✅ <strong>Use simple phrases:</strong> "tomorrow at 7pm for 4 people"</div>
-                        <div style="margin-bottom: 8px;">✅ <strong>Watch the transcript</strong> appear in green</div>
-                        <div style="margin-bottom: 8px;">✅ <strong>Can retry</strong> if it doesn't work first time</div>
-                    </div>
-                    <p style="text-align: center; color: #999; margin-top: 15px; font-size: 12px; line-height: 1.6;">
-                        <strong>Example:</strong> "Tomorrow at 7pm for 4 people, name John Smith, phone 07123456789"
+                    <p style="color: #ddd; font-size: 13px; margin: 0 0 15px 0; line-height: 1.5;">
+                        We've pre-filled common choices (tomorrow, 7 PM, 2 people).<br>
+                        Just enter your name & phone, adjust if needed, and confirm!
                     </p>
-                    <p style="text-align: center; color: #666; margin-top: 10px; font-size: 11px;">
-                        💡 Demo booking system. Production would integrate with Yelp Reservations, OpenTable, or Resy.
+                    <p style="color: #666; margin: 0; font-size: 11px;">
+                        💡 Demo booking. Production would integrate with Yelp Reservations API.
                     </p>
                 </div>
             </div>

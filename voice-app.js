@@ -618,28 +618,26 @@ function openBookingModal(businessName, autoStartVoice = false) {
     
     modal.style.display = 'flex';
     
-    // Set default date to today
-    const today = new Date().toISOString().split('T')[0];
-    document.getElementById('bookingDate').value = today;
-    document.getElementById('bookingDate').min = today;
+    // Set smart defaults
+    const today = new Date();
+    const tomorrow = new Date(today);
+    tomorrow.setDate(tomorrow.getDate() + 1);
     
-    // If opened from voice command, auto-start voice input after a delay
-    if (autoStartVoice) {
-        const voiceStatus = document.getElementById('voiceBookingStatus');
-        const voiceBtn = document.getElementById('voiceBookingBtn');
-        let countdown = 4;
-        
-        // Store countdown interval so it can be cancelled
-        window.bookingCountdownInterval = null;
-        
-        // Give clear instruction first
-        speak(`Ready to book at ${businessName}. Starting voice input in 4 seconds. Or click to fill manually.`);
-        
-        // Allow cancelling countdown by clicking button
-        voiceBtn.textContent = '❌ Cancel Auto-Voice (Fill Manually)';
-        voiceBtn.style.background = 'linear-gradient(135deg, #ff9800 0%, #f57c00 100%)';
-        voiceBtn.onclick = () => {
-            if (window.bookingCountdownInterval) {
+    // Default to tomorrow at 7 PM (most common dinner reservation)
+    const defaultDate = tomorrow.toISOString().split('T')[0];
+    document.getElementById('bookingDate').value = defaultDate;
+    document.getElementById('bookingDate').min = today.toISOString().split('T')[0];
+    
+    // Default time is already set to 19:00 (7 PM) in HTML
+    // Default party size is already set to 2 people in HTML
+    
+    // Simple message
+    speak(`Opening booking for ${businessName}. Please fill in your details and confirm.`);
+    
+    // Focus on first input that needs filling (name)
+    setTimeout(() => {
+        document.getElementById('customerName').focus();
+    }, 500);
                 clearInterval(window.bookingCountdownInterval);
                 window.bookingCountdownInterval = null;
                 voiceBtn.textContent = '🎤 Use Voice to Fill Form';

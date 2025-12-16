@@ -184,9 +184,9 @@ async function processVoiceQuery(query) {
             // Show call info for first result
             setTimeout(() => {
                 const firstBusiness = response.businesses[0];
-                speak(response.text + ` Here's how to call ${firstBusiness.name}.`);
+                speak(response.text + ` Here's the phone number for ${firstBusiness.name}.`);
                 setTimeout(() => {
-                    callBusiness(firstBusiness.name);
+                    callBusiness(firstBusiness.name, firstBusiness.phone);
                 }, 2000);
             }, 2000);
         } else {
@@ -366,7 +366,8 @@ function extractBusinesses(data) {
                         address: b.location?.formatted_address || '',
                         tip: b.summaries?.short || 'Great local spot!',
                         review_count: b.review_count || 0,
-                        image_url: b.contextual_info?.photos?.[0]?.original_url || b.image_url || ''
+                        image_url: b.contextual_info?.photos?.[0]?.original_url || b.image_url || '',
+                        phone: b.phone || ''
                     });
                 });
             }
@@ -387,7 +388,8 @@ function getMockResponse(query, isReservation = false) {
             address: '1-5 West St, London WC2H 9NQ',
             tip: 'Classic British dining with a modern twist. Perfect for special occasions.',
             review_count: 1245,
-            image_url: 'https://images.unsplash.com/photo-1517248135467-4c7edcad34c4?w=800'
+            image_url: 'https://images.unsplash.com/photo-1517248135467-4c7edcad34c4?w=800',
+            phone: '+44 20 7836 4751'
         },
         {
             name: 'Dishoom',
@@ -397,7 +399,8 @@ function getMockResponse(query, isReservation = false) {
             address: '12 Upper St Martin\'s Lane, London WC2H 9FB',
             tip: 'Bombay-inspired cafe with exceptional breakfast and house chai.',
             review_count: 2156,
-            image_url: 'https://images.unsplash.com/photo-1585937421612-70a008356fbe?w=800'
+            image_url: 'https://images.unsplash.com/photo-1585937421612-70a008356fbe?w=800',
+            phone: '+44 20 7420 9320'
         },
         {
             name: 'Wagamama',
@@ -407,7 +410,8 @@ function getMockResponse(query, isReservation = false) {
             address: '14A Irving St, London WC2H 7AF',
             tip: 'Fresh ramen and Asian dishes. Try the chicken katsu curry.',
             review_count: 987,
-            image_url: 'https://images.unsplash.com/photo-1569718212165-3a8278d5f624?w=800'
+            image_url: 'https://images.unsplash.com/photo-1569718212165-3a8278d5f624?w=800',
+            phone: '+44 20 7839 2323'
         }
     ];
 
@@ -521,7 +525,7 @@ function createBusinessCard(business, index) {
                 callBtn.addEventListener('click', (e) => {
                     e.stopPropagation();
                     e.preventDefault();
-                    callBusiness(business.name);
+                    callBusiness(business.name, business.phone);
                 });
             }
         }
@@ -1211,9 +1215,14 @@ function getDirections(address) {
 }
 
 // Call business
-function callBusiness(businessName) {
-    speak(`To call ${businessName}, please click the business card to view their phone number, or search for them on Yelp.`);
-    alert(`📞 To call ${businessName}:\n\n1. Click their business card for details\n2. Visit their Yelp page for phone number\n3. Or search "${businessName}" on Yelp app`);
+function callBusiness(businessName, phone) {
+    if (phone) {
+        speak(`The phone number for ${businessName} is ${phone}`);
+        alert(`📞 ${businessName}\n\n${phone}\n\nClick OK to close, then dial this number on your phone.`);
+    } else {
+        speak(`Phone number not available for ${businessName}. Please search for them on Yelp.`);
+        alert(`📞 ${businessName}\n\nPhone number not available.\n\nPlease visit their Yelp page or search online for contact information.`);
+    }
 }
 
 // Voice command for booking

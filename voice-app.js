@@ -238,9 +238,15 @@ async function queryYelpAI(query) {
     }
 
     // Check if user specified a location in their query
-    const locationKeywords = /\b(in|at|near|around|close to|by)\s+([A-Z][a-z]+(\s+[A-Z][a-z]+)*)/i;
-    const hasLocationInQuery = locationKeywords.test(query) || 
-                                /New York|London|Paris|Tokyo|Los Angeles|San Francisco|Chicago|Boston|Seattle|Miami|Vegas|Toronto|Vancouver|Sydney|Melbourne/i.test(query);
+    // First, check if query has "near me", "nearby", "around here" - these should use GPS
+    const useGPSPhrases = /\b(near me|nearby|near here|around here|close by|around me)\b/i;
+    const shouldUseGPS = useGPSPhrases.test(query);
+    
+    // Check if user specified an actual city/location (requires capitalized words)
+    const locationKeywords = /\b(in|at|near|around|close to|by)\s+([A-Z][a-z]+(\s+[A-Z][a-z]+)*)/;  // NO 'i' flag - case sensitive
+    const hasCityName = /New York|London|Paris|Tokyo|Los Angeles|San Francisco|Chicago|Boston|Seattle|Miami|Vegas|Toronto|Vancouver|Sydney|Melbourne|Dublin|Manchester|Edinburgh|Birmingham|Amsterdam|Berlin|Madrid|Rome|Barcelona/i.test(query);
+    
+    const hasLocationInQuery = !shouldUseGPS && (locationKeywords.test(query) || hasCityName);
 
     let finalQuery = query;
     let context = {
@@ -249,11 +255,11 @@ async function queryYelpAI(query) {
 
     if (hasLocationInQuery) {
         // User specified a location - let Yelp AI parse it naturally
-        console.log('📍 Location detected in query, using natural language');
+        console.log('📍 Location detected in query, using natural language:', query);
         finalQuery = query;
     } else {
-        // No location mentioned - use GPS coordinates
-        console.log('📍 No location in query, using GPS:', userLocation);
+        // No location mentioned or "near me" - use GPS coordinates
+        console.log('📍 No specific location in query (or "near me"), using GPS:', userLocation);
         finalQuery = `${query} near ${userLocation.lat}, ${userLocation.lng}`;
         context.latitude = userLocation.lat;
         context.longitude = userLocation.lng;
